@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import LanguageModal from '../utils/LanguageSelectionModal';
-import LanguageMapping from '../utils/LanguageMapping';
+import LanguageSelectionModal from '../utils/LanguageSelectionModal';
+import languageName from '../utils/LanguageName';
 
 export default function LanguageSet(props: any) {
   const [isModalVisible, setModalVisible] = useState(false);
@@ -51,13 +51,14 @@ export default function LanguageSet(props: any) {
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={[styles.container, props.isDarkMode && styles.container_dm]}>
         <TouchableOpacity
+          style={styles.langArea}
           onPress={() => {
             setModalMode('source');
             openModal();
           }}>
           <Text
             style={[styles.langStyle, props.isDarkMode && styles.langStyle_dm]}>
-            {LanguageMapping(props.sourceLang)}
+            {languageName(props.sourceLang)}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={btnChangeLanguage}>
@@ -74,13 +75,14 @@ export default function LanguageSet(props: any) {
           )}
         </TouchableOpacity>
         <TouchableOpacity
+          style={styles.langArea}
           onPress={() => {
             setModalMode('target');
             openModal();
           }}>
           <Text
             style={[styles.langStyle, props.isDarkMode && styles.langStyle_dm]}>
-            {LanguageMapping(props.targetLang)}
+            {languageName(props.targetLang)}
           </Text>
         </TouchableOpacity>
 
@@ -89,8 +91,9 @@ export default function LanguageSet(props: any) {
           animationType="slide"
           transparent={true}
           onRequestClose={closeModal}>
-          <LanguageModal
+          <LanguageSelectionModal
             closeModal={closeModal}
+            modalMode={modalMode}
             handleLanguageSelect={handleLanguageSelect}
           />
         </Modal>
@@ -106,14 +109,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'skyblue',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
   },
   container_dm: {
     backgroundColor: '#003458',
     borderBottomColor: '#C2C2C2',
   },
+  langArea: {
+    flex: 1,
+    alignItems: 'center',
+  },
   langStyle: {
-    textAlign: 'center',
     fontSize: 18,
   },
   langStyle_dm: {

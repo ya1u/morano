@@ -1,5 +1,5 @@
-const languageMapping: Map<string, string> = new Map([
-  ['af', 'Afrikaans'],
+export const LanguageMap: Map<string, string> = new Map([
+  ['af', '아프리칸스어'],
   ['sq', '알바니아어'],
   ['am', '암하라어'],
   ['ar', '아랍어'],
@@ -134,7 +134,3 @@ const languageMapping: Map<string, string> = new Map([
   ['yo', '요루바어'],
   ['zu', '줄루어'],
 ]);
-
-export default function languageName(ISO_CODE: string): string | undefined {
-  return languageMapping.get(ISO_CODE);
-}
