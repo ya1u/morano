@@ -94,6 +94,7 @@ export default function LanguageSet(props: any) {
           <LanguageSelectionModal
             closeModal={closeModal}
             modalMode={modalMode}
+            isDarkMode={props.isDarkMode}
             handleLanguageSelect={handleLanguageSelect}
           />
         </Modal>
@@ -119,7 +120,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   langStyle: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: '500',
   },
   langStyle_dm: {
     color: '#C2C2C2',
