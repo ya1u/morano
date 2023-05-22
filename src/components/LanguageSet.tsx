@@ -88,7 +88,7 @@ export default function LanguageSet(props: any) {
 
         <Modal
           visible={isModalVisible}
-          animationType="slide"
+          animationType="none"
           transparent={true}
           onRequestClose={closeModal}>
           <LanguageSelectionModal

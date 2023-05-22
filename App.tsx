@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -12,6 +13,33 @@ import Translate from './src/components/Translate';
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    const loadDarkModeState = async () => {
+      try {
+        const storedDarkModeState = await AsyncStorage.getItem('isDarkMode');
+        if (storedDarkModeState !== null) {
+          setIsDarkMode(JSON.parse(storedDarkModeState));
+        }
+      } catch (error) {
+        console.log('Error loading dark mode state:', error);
+      }
+    };
+
+    loadDarkModeState();
+  }, []);
+
+  useEffect(() => {
+    const saveDarkModeState = async () => {
+      try {
+        await AsyncStorage.setItem('isDarkMode', JSON.stringify(isDarkMode));
+      } catch (error) {
+        console.log('Error saving dark mode state:', error);
+      }
+    };
+
+    saveDarkModeState();
+  }, [isDarkMode]);
 
   const darkModeSwitch = () => setIsDarkMode(previousState => !previousState);
 
@@ -48,7 +76,11 @@ export default function App() {
           targetLang={targetLang}
         />
       </ScrollView>
-      {isDarkMode ? <StatusBar barStyle={'light-content'} /> : null}
+      {isDarkMode ? (
+        <StatusBar barStyle={'light-content'} />
+      ) : (
+        <StatusBar barStyle={'dark-content'} />
+      )}
     </View>
   );
 }

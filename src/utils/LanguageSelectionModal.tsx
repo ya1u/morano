@@ -18,7 +18,7 @@ export default function LanguageSelectionModal(props: any) {
   return (
     <Modal
       visible={props.visible}
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       onRequestClose={props.closeModal}>
       <TouchableWithoutFeedback onPress={props.closeModal}>
@@ -66,7 +66,6 @@ export default function LanguageSelectionModal(props: any) {
                     </Text>
                   </TouchableOpacity>
                 ))}
-                {/* Add more language options here */}
               </ScrollView>
             </View>
           </TouchableWithoutFeedback>
