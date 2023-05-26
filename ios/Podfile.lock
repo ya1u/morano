@@ -418,6 +418,8 @@ PODS:
   - RNCClipboard (1.11.2):
     - React-Core
   - SocketRocket (0.6.0)
+  - TextToSpeech (4.1.0):
+    - React
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -483,6 +485,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - TextToSpeech (from `../node_modules/react-native-tts`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -574,6 +577,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  TextToSpeech:
+    :path: "../node_modules/react-native-tts"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -627,6 +632,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b90b71f45b8b97be43bc4284e71a6af48ac9f547
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  TextToSpeech: b3aa777ff5585705f179c0a2436bfd0926d1716e
   Yoga: 065f0b74dba4832d6e328238de46eb72c5de9556
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

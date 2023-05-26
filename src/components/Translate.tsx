@@ -11,6 +11,9 @@ import {
   Alert,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import Tts from 'react-native-tts';
+
+const apiKey = 'AIzaSyBOPrHwjKxyy7QyTipWR8qvqThlZQhSem0'; // replace with your own API key
 
 export default function Translate(props: any) {
   const [text, setText] = useState<string>('');
@@ -30,12 +33,8 @@ export default function Translate(props: any) {
   };
 
   const translateText = async () => {
-    const apiKey = 'AIzaSyBOPrHwjKxyy7QyTipWR8qvqThlZQhSem0'; // replace with your own API key
     const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-    // const sourceLang = 'en'; // replace with your source language code
-    // const targetLang = 'ko'; // replace with your target language code
     const format = 'text';
-    // const audioUrl = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}&source=${sourceLang}&target=${targetLang}&q=${text}&format=${format}&alt=media`;
 
     try {
       const response = await fetch(url, {
@@ -64,6 +63,17 @@ export default function Translate(props: any) {
     }
   };
 
+  const textToSpeech = (txt: string) => {
+    Tts.getInitStatus().then(() => {
+      Tts.speak(txt);
+    });
+
+    Tts.addEventListener('tts-start', () => null);
+    Tts.addEventListener('tts-progress', () => null);
+    Tts.addEventListener('tts-finish', () => null);
+    Tts.addEventListener('tts-cancel', () => null);
+  };
+
   useEffect(() => {
     translateText();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,11 +93,32 @@ export default function Translate(props: any) {
           placeholderTextColor={props.isDarkMode ? '#C2C2C2' : undefined}
           multiline={true}
         />
+
         <TouchableOpacity
-          style={[styles.button, props.isDarkMode && styles.button_dm]}
+          style={[styles.xButton, props.isDarkMode && styles.button_dm]}
           onPress={btnReset}>
           <Text style={styles.buttonText}>X</Text>
         </TouchableOpacity>
+        {text ? (
+          <TouchableOpacity
+            style={[
+              styles.soundButton,
+              props.isDarkMode && styles.soundButton_dm,
+            ]}
+            onPress={() => textToSpeech(text)}>
+            {props.isdarkMode ? (
+              <Image
+                style={styles.btnSound}
+                source={require('../assets/icon-sound-darkmode.png')}
+              />
+            ) : (
+              <Image
+                style={styles.btnSound}
+                source={require('../assets/icon-sound.png')}
+              />
+            )}
+          </TouchableOpacity>
+        ) : null}
       </View>
       <View style={[styles.outputContainer]}>
         <TextInput
@@ -96,6 +127,26 @@ export default function Translate(props: any) {
           multiline={true}
           editable={false}
         />
+        {text ? (
+          <TouchableOpacity
+            style={[
+              styles.soundButton,
+              props.isDarkMode && styles.soundButton_dm,
+            ]}
+            onPress={() => textToSpeech(result)}>
+            {props.isdarkMode ? (
+              <Image
+                style={styles.btnSound}
+                source={require('../assets/icon-sound-darkmode.png')}
+              />
+            ) : (
+              <Image
+                style={styles.btnSound}
+                source={require('../assets/icon-sound.png')}
+              />
+            )}
+          </TouchableOpacity>
+        ) : null}
       </View>
       <View
         style={[
@@ -180,7 +231,7 @@ const styles = StyleSheet.create({
   output_dm: {
     color: '#C2C2C2',
   },
-  button: {
+  xButton: {
     position: 'absolute',
     top: 10,
     right: 10,
@@ -199,6 +250,25 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  soundButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    marginTop: 10,
+    borderRadius: 15,
+    backgroundColor: 'skyblue',
+    width: 60,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  soundButton_dm: {
+    backgroundColor: '#003458',
+  },
+  btnSound: {
+    width: 22,
+    height: 22,
   },
   btnContainer: {
     flex: 1,
