@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#003458',
   },
   btnTitle: {
+    color: 'black',
     fontSize: 30,
     fontWeight: 'bold',
   },

@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   langStyle: {
+    color: 'black',
     fontSize: 20,
     fontWeight: '500',
   },

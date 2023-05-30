@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
   },
   modalLanguageButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
   },

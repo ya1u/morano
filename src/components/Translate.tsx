@@ -63,15 +63,31 @@ export default function Translate(props: any) {
     }
   };
 
+  // Define a flag to track if the event listeners have been added
+  let eventListenersAdded = false;
+
   const textToSpeech = (txt: string) => {
     Tts.getInitStatus().then(() => {
-      Tts.speak(txt);
+      Tts.speak(txt, {
+        iosVoiceId: 'default',
+        rate: 0.55,
+        androidParams: {
+          KEY_PARAM_PAN: 0,
+          KEY_PARAM_VOLUME: 1,
+          KEY_PARAM_STREAM: 'STREAM_MUSIC',
+        },
+      });
     });
 
-    Tts.addEventListener('tts-start', () => null);
-    Tts.addEventListener('tts-progress', () => null);
-    Tts.addEventListener('tts-finish', () => null);
-    Tts.addEventListener('tts-cancel', () => null);
+    if (!eventListenersAdded) {
+      // Add the event listeners
+      Tts.addEventListener('tts-start', () => null);
+      Tts.addEventListener('tts-progress', () => null);
+      Tts.addEventListener('tts-finish', () => null);
+      Tts.addEventListener('tts-cancel', () => null);
+
+      eventListenersAdded = true; // Update the flag
+    }
   };
 
   useEffect(() => {
@@ -90,7 +106,7 @@ export default function Translate(props: any) {
           onChangeText={setText}
           value={text}
           placeholder="무엇을 번역해드릴까요?"
-          placeholderTextColor={props.isDarkMode ? '#C2C2C2' : undefined}
+          placeholderTextColor={props.isDarkMode ? '#C2C2C2' : 'darkgrey'}
           multiline={true}
         />
 
@@ -121,12 +137,23 @@ export default function Translate(props: any) {
         ) : null}
       </View>
       <View style={[styles.outputContainer]}>
-        <TextInput
-          style={[styles.output, props.isDarkMode && styles.output_dm]}
-          value={text ? result : '...'}
-          multiline={true}
-          editable={false}
-        />
+        {text ? (
+          <TextInput
+            style={[styles.output, props.isDarkMode && styles.output_dm]}
+            value={result}
+            multiline={true}
+            editable={false}
+          />
+        ) : (
+          <Image
+            source={
+              props.isDarkMode
+                ? require('../assets/icon-what-darkmode.png')
+                : require('../assets/icon-what.png')
+            }
+          />
+        )}
+
         {text ? (
           <TouchableOpacity
             style={[
@@ -211,6 +238,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 24,
     paddingHorizontal: 10,
+    color: 'black',
     textAlign: 'center',
   },
   input_dm: {
@@ -226,6 +254,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 24,
     paddingHorizontal: 10,
+    color: 'black',
     textAlign: 'center',
   },
   output_dm: {
