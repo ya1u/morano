@@ -1,4 +1,5 @@
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useState, useEffect} from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -11,6 +12,52 @@ import {
 import {LanguageMap} from './LanguageMap';
 
 export default function LanguageSelectionModal(props: any) {
+  const [rul, setRul] = useState(new Map());
+
+  const saveRul = async (rul: Map<string, string>) => {
+    try {
+      const serializedRul = JSON.stringify(Array.from(rul.entries()));
+      await AsyncStorage.setItem('rul', serializedRul);
+    } catch (error) {
+      console.log('Failed to save rul state:', error);
+    }
+  };
+
+  const loadRul = async () => {
+    try {
+      const serializedRul = await AsyncStorage.getItem('rul');
+      if (serializedRul !== null) {
+        const rulArray = JSON.parse(serializedRul);
+        return new Map(rulArray);
+      }
+    } catch (error) {
+      console.log('Failed to load rul state:', error);
+    }
+    return new Map([
+      ['en', '영어'],
+      ['ko', '한국어'],
+    ]);
+  };
+
+  const loadRulState = async () => {
+    const loadedRul = await loadRul();
+    setRul(loadedRul);
+  };
+
+  useEffect(() => {
+    loadRulState();
+  });
+
+  const addRul = (key: string, value: string) => {
+    const newRul = new Map(rul);
+    newRul.set(key, value);
+    setRul(newRul);
+
+    saveRul(newRul);
+
+    props.handleLanguageSelect(key);
+  };
+
   const handleModalContentPress = (event: any) => {
     event.stopPropagation();
   };
@@ -49,23 +96,74 @@ export default function LanguageSelectionModal(props: any) {
                 </TouchableOpacity>
               </View>
               <ScrollView>
-                {Array.from(LanguageMap).map(([key, value]) => (
-                  <TouchableOpacity
-                    key={key}
-                    style={[
-                      styles.modalLanguageButton,
-                      props.isDarkMode && styles.modalLanguageButton_dm,
-                    ]}
-                    onPress={() => props.handleLanguageSelect(key)}>
+                {rul.size > 0 ? (
+                  <>
                     <Text
                       style={[
-                        styles.modalLanguageButtonText,
-                        props.isDarkMode && styles.modalLanguageButtonText_dm,
+                        styles.subTitleText,
+                        props.isDarkMode && styles.subTitleText_dm,
                       ]}>
-                      {value}
+                      최근 사용 언어
                     </Text>
-                  </TouchableOpacity>
-                ))}
+                    <View>
+                      {Array.from(rul).map(([key, value]) => (
+                        <>
+                          <TouchableOpacity
+                            key={key}
+                            style={[
+                              styles.modalLanguageButton,
+                              props.isDarkMode && styles.modalLanguageButton_dm,
+                            ]}
+                            onPress={() => props.handleLanguageSelect(key)}>
+                            <Text
+                              style={[
+                                styles.modalLanguageButtonText,
+                                props.isDarkMode &&
+                                  styles.modalLanguageButtonText_dm,
+                              ]}>
+                              {value}
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[
+                              styles.rulDeleteButton,
+                              props.isDarkMode && styles.rulDeleteButton_dm,
+                            ]}
+                            onPress={() => {}}>
+                            <Text style={styles.rulDeleteButtonImg}>X</Text>
+                          </TouchableOpacity>
+                        </>
+                      ))}
+                    </View>
+                  </>
+                ) : null}
+
+                <Text
+                  style={[
+                    styles.subTitleText,
+                    props.isDarkMode && styles.subTitleText_dm,
+                  ]}>
+                  모든 언어
+                </Text>
+                <View>
+                  {Array.from(LanguageMap).map(([key, value]) => (
+                    <TouchableOpacity
+                      key={key}
+                      style={[
+                        styles.modalLanguageButton,
+                        props.isDarkMode && styles.modalLanguageButton_dm,
+                      ]}
+                      onPress={() => addRul(key, value)}>
+                      <Text
+                        style={[
+                          styles.modalLanguageButtonText,
+                          props.isDarkMode && styles.modalLanguageButtonText_dm,
+                        ]}>
+                        {value}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </ScrollView>
             </View>
           </TouchableWithoutFeedback>
@@ -124,6 +222,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  subTitleText: {
+    marginTop: 15,
+  },
+  subTitleText_dm: {
+    color: '#C2C2C2',
+  },
+  // rulDeleteButton: {
+  //   position: 'absolute',
+  // },
   modalLanguageButton: {
     marginTop: 10,
     paddingVertical: 8,

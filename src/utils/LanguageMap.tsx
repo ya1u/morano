@@ -6,7 +6,7 @@ export const LanguageMap: Map<string, string> = new Map([
   ['hy', '아르메니아어'],
   ['as', '아사메어'],
   ['ay', '아이마라어'],
-  ['a-z', '아제르바이잔어'],
+  // ['a-z', '아제르바이잔어'],
   ['bm', '밤바라어'],
   ['eu', '바스크어'],
   ['be', '벨라루스어'],

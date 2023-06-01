@@ -31,7 +31,7 @@ export default function LanguageSet(props: any) {
 
   const handleLanguageSelect = (language: string) => {
     // Handle selected language
-    console.log('Selected', modalMode, 'language:', language);
+    // console.log('Selected', modalMode, 'language:', language);
     if (modalMode === 'source') {
       props.setSourceLang(language);
     }
