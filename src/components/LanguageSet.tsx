@@ -121,14 +121,14 @@ const styles = StyleSheet.create({
   },
   langStyle: {
     color: 'black',
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '500',
   },
   langStyle_dm: {
     color: '#C2C2C2',
   },
   btnChange: {
-    width: 28,
-    height: 28,
+    width: 34,
+    height: 34,
   },
 });

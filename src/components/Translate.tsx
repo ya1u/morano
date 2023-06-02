@@ -146,10 +146,11 @@ export default function Translate(props: any) {
           />
         ) : (
           <Image
+            style={styles.outputImg}
             source={
               props.isDarkMode
-                ? require('../assets/icon-what-darkmode.png')
-                : require('../assets/icon-what.png')
+                ? require('../assets/icon-dot-darkmode.png')
+                : require('../assets/icon-dot-darkmode.png')
             }
           />
         )}
@@ -250,6 +251,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  outputImg: {
+    width: 60,
+    height: 60,
+  },
   output: {
     flex: 1,
     fontSize: 24,
@@ -278,7 +283,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 22,
   },
   soundButton: {
     position: 'absolute',

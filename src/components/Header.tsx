@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   btnTitle: {
     color: 'black',
-    fontSize: 30,
+    fontSize: 38,
     fontWeight: 'bold',
   },
   btnTitle_dm: {

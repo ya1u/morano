@@ -8,12 +8,14 @@ import {
   View,
   Modal,
   TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
 import {LanguageMap} from './LanguageMap';
 
 export default function LanguageSelectionModal(props: any) {
   const [rul, setRul] = useState(new Map());
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const saveRul = async (rul: Map<string, string>) => {
     try {
       const serializedRul = JSON.stringify(Array.from(rul.entries()));
@@ -46,7 +48,8 @@ export default function LanguageSelectionModal(props: any) {
 
   useEffect(() => {
     loadRulState();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addRul = (key: string, value: string) => {
     const newRul = new Map(rul);
@@ -56,6 +59,14 @@ export default function LanguageSelectionModal(props: any) {
     saveRul(newRul);
 
     props.handleLanguageSelect(key);
+  };
+
+  const handleRulDelete = async (key: string) => {
+    const newRul = new Map(rul);
+    newRul.delete(key);
+    saveRul(newRul);
+
+    setRul(newRul);
   };
 
   const handleModalContentPress = (event: any) => {
@@ -107,9 +118,8 @@ export default function LanguageSelectionModal(props: any) {
                     </Text>
                     <View>
                       {Array.from(rul).map(([key, value]) => (
-                        <>
+                        <React.Fragment key={key}>
                           <TouchableOpacity
-                            key={key}
                             style={[
                               styles.modalLanguageButton,
                               props.isDarkMode && styles.modalLanguageButton_dm,
@@ -123,16 +133,27 @@ export default function LanguageSelectionModal(props: any) {
                               ]}>
                               {value}
                             </Text>
+                            <TouchableOpacity
+                              style={[
+                                styles.rulDeleteButton,
+                                props.isDarkMode && styles.rulDeleteButton_dm,
+                              ]}
+                              onPress={() => handleRulDelete(key)}>
+                              {/* <Text style={styles.rulDeleteButtonImg}>X</Text> */}
+                              {props.isDarkMode ? (
+                                <Image
+                                  style={styles.rulDeleteButtonImg}
+                                  source={require('../assets/icon-recycleBin-darkmode.png')}
+                                />
+                              ) : (
+                                <Image
+                                  style={styles.rulDeleteButtonImg}
+                                  source={require('../assets/icon-recycleBin.png')}
+                                />
+                              )}
+                            </TouchableOpacity>
                           </TouchableOpacity>
-                          <TouchableOpacity
-                            style={[
-                              styles.rulDeleteButton,
-                              props.isDarkMode && styles.rulDeleteButton_dm,
-                            ]}
-                            onPress={() => {}}>
-                            <Text style={styles.rulDeleteButtonImg}>X</Text>
-                          </TouchableOpacity>
-                        </>
+                        </React.Fragment>
                       ))}
                     </View>
                   </>
@@ -197,7 +218,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
   },
   titleText: {
-    fontSize: 18,
+    fontSize: 24,
     color: 'black',
     fontWeight: 'bold',
   },
@@ -223,14 +244,31 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   subTitleText: {
+    fontSize: 20,
     marginTop: 15,
   },
   subTitleText_dm: {
     color: '#C2C2C2',
   },
-  // rulDeleteButton: {
-  //   position: 'absolute',
-  // },
+  rulDeleteButton: {
+    position: 'absolute',
+    top: 4.25,
+    right: 1,
+    width: 35,
+    height: 23,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rulDeleteButton_dm: {
+    borderColor: '#C2C2C2',
+  },
+  rulDeleteButtonImg: {
+    width: 20,
+    height: 20,
+  },
   modalLanguageButton: {
     marginTop: 10,
     paddingVertical: 8,
@@ -242,7 +280,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#202B38',
   },
   modalLanguageButtonText: {
-    fontSize: 16,
+    fontSize: 23,
     color: 'black',
     textAlign: 'center',
   },
