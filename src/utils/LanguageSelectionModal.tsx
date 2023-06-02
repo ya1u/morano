@@ -11,6 +11,7 @@ import {
   Image,
 } from 'react-native';
 import {LanguageMap} from './LanguageMap';
+import {showMessage} from 'react-native-flash-message';
 
 export default function LanguageSelectionModal(props: any) {
   const [rul, setRul] = useState(new Map());
@@ -62,6 +63,12 @@ export default function LanguageSelectionModal(props: any) {
   };
 
   const handleRulDelete = async (key: string) => {
+    showMessage({
+      message: '삭제되었습니다.',
+      icon: 'info',
+      duration: 500, // Duration in milliseconds
+    });
+
     const newRul = new Map(rul);
     newRul.delete(key);
     saveRul(newRul);

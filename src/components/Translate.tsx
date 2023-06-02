@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {showMessage} from 'react-native-flash-message';
 import Tts from 'react-native-tts';
 
 const apiKey = 'AIzaSyBOPrHwjKxyy7QyTipWR8qvqThlZQhSem0'; // replace with your own API key
@@ -28,7 +29,11 @@ export default function Translate(props: any) {
   };
 
   const btnClipboard = (): void => {
-    Alert.alert('Clipboard');
+    showMessage({
+      message: '클립보드에 복사되었습니다.',
+      icon: 'success',
+      duration: 700, // Duration in milliseconds
+    });
     Clipboard.setString(result);
   };
 

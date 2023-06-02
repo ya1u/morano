@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FlashMessage from 'react-native-flash-message';
 import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -81,6 +82,7 @@ export default function App() {
       ) : (
         <StatusBar barStyle={'dark-content'} />
       )}
+      <FlashMessage position="center" />
     </View>
   );
 }
