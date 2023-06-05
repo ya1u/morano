@@ -24,13 +24,13 @@ const Header: React.FC<HeaderProps> = ({isDarkMode, darkModeSwitch}) => {
     darkModeSwitch();
     if (isDarkMode) {
       showMessage({
-        message: '라이트모드',
+        message: '라이트모드 변경되었습니다.',
         icon: 'info',
         duration: 700,
       });
     } else {
       showMessage({
-        message: '다크모드',
+        message: '다크모드로 변경되었습니다.',
         icon: 'info',
         duration: 700,
       });

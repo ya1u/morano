@@ -19,6 +19,15 @@ const apiKey = 'AIzaSyBOPrHwjKxyy7QyTipWR8qvqThlZQhSem0'; // replace with your o
 export default function Translate(props: any) {
   const [text, setText] = useState<string>('');
   const [result, setResult] = useState<string>('');
+  const [showCursor, setShowCursor] = useState<boolean>(true);
+  const [cursorFlick, setCursorFlick] = useState<boolean>(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCursorFlick(prev => !prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
 
   const dismissKeyboard = (): void => {
     Keyboard.dismiss();
@@ -75,7 +84,7 @@ export default function Translate(props: any) {
     Tts.getInitStatus().then(() => {
       Tts.speak(txt, {
         iosVoiceId: 'default',
-        rate: 0.55,
+        rate: 0.5,
         androidParams: {
           KEY_PARAM_PAN: 0,
           KEY_PARAM_VOLUME: 1,
@@ -105,7 +114,11 @@ export default function Translate(props: any) {
       activeOpacity={1}
       onPress={dismissKeyboard}
       style={[styles.container, props.isDarkMode && styles.container_dm]}>
-      <View style={styles.inputContainer}>
+      <View
+        style={[
+          styles.inputContainer,
+          props.isDarkMode && styles.inputContainer_dm,
+        ]}>
         <TextInput
           style={[styles.input, props.isDarkMode && styles.input_dm]}
           onChangeText={setText}
@@ -113,7 +126,12 @@ export default function Translate(props: any) {
           placeholder="무엇을 번역해드릴까요?"
           placeholderTextColor={props.isDarkMode ? '#C2C2C2' : 'darkgrey'}
           multiline={true}
+          onFocus={() => setShowCursor(false)}
+          onBlur={() => setShowCursor(true)}
         />
+        {showCursor ? (
+          <View style={[styles.cursor, cursorFlick && styles.cursorVisible]} />
+        ) : null}
 
         <TouchableOpacity
           style={[styles.xButton, props.isDarkMode && styles.button_dm]}
@@ -141,7 +159,11 @@ export default function Translate(props: any) {
           </TouchableOpacity>
         ) : null}
       </View>
-      <View style={[styles.outputContainer]}>
+      <View
+        style={[
+          styles.outputContainer,
+          props.isDarkMode && styles.outputContainer_dm,
+        ]}>
         {text ? (
           <TextInput
             style={[styles.output, props.isDarkMode && styles.output_dm]}
@@ -180,44 +202,33 @@ export default function Translate(props: any) {
             )}
           </TouchableOpacity>
         ) : null}
+        {text ? (
+          <TouchableOpacity
+            style={[
+              styles.clipboardButton,
+              props.isDarkMode && styles.clipboardButton_dm,
+            ]}
+            onPress={btnClipboard}>
+            {props.isDarkMode ? (
+              <Image
+                style={styles.btnClipboard}
+                source={require('../assets/icon-clipboard-darkmode.png')}
+              />
+            ) : (
+              <Image
+                style={styles.btnClipboard}
+                source={require('../assets/icon-clipboard.png')}
+              />
+            )}
+          </TouchableOpacity>
+        ) : null}
       </View>
       <View
         style={[
           styles.btnContainer,
           props.isDarkMode && styles.btnContainer_dm,
         ]}>
-        <TouchableOpacity onPress={btnClipboard}>
-          {props.isDarkMode ? (
-            <Image
-              style={styles.btnImg}
-              source={require('../assets/icon-clipboard-darkmode.png')}
-            />
-          ) : (
-            <Image
-              style={styles.btnImg}
-              source={require('../assets/icon-clipboard.png')}
-            />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity>
-          {props.isDarkMode ? (
-            <Image
-              style={styles.btnImg}
-              source={require('../assets/icon-screenCapture-darkmode.png')}
-            />
-          ) : (
-            <Image
-              style={styles.btnImg}
-              source={require('../assets/icon-screenCapture.png')}
-            />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity>
-          {/* <Image
-            style={styles.btnImg}
-            source={require('../assets/icon-zoomIn.png')}
-          /> */}
-        </TouchableOpacity>
+        <></>
       </View>
     </TouchableOpacity>
   );
@@ -226,19 +237,27 @@ export default function Translate(props: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 8,
-    backgroundColor: '#FFF',
+    backgroundColor: 'skyblue',
     width: Dimensions.get('window').width,
+    alignItems: 'center',
   },
   container_dm: {
-    backgroundColor: '#202B38',
+    backgroundColor: '#003458',
   },
   inputContainer: {
     flex: 1,
+    backgroundColor: '#FFF',
+    width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: 'darkgrey',
     flexDirection: 'row',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  inputContainer_dm: {
+    backgroundColor: '#202B38',
   },
   input: {
     flex: 1,
@@ -250,11 +269,28 @@ const styles = StyleSheet.create({
   input_dm: {
     color: '#C2C2C2',
   },
+  cursor: {
+    position: 'absolute',
+    height: 30,
+    width: 2,
+    backgroundColor: 'darkgrey',
+    opacity: 0.6,
+  },
+  cursorVisible: {
+    opacity: 0,
+  },
   outputContainer: {
     flex: 1,
+    backgroundColor: '#FFF',
+    width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+  },
+  outputContainer_dm: {
+    backgroundColor: '#202B38',
   },
   outputImg: {
     width: 60,
@@ -275,9 +311,9 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     marginTop: 5,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
@@ -288,7 +324,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 22,
+    fontSize: 24,
   },
   soundButton: {
     position: 'absolute',
@@ -298,7 +334,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: 'skyblue',
     width: 60,
-    height: 30,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -306,11 +342,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#003458',
   },
   btnSound: {
-    width: 22,
-    height: 22,
+    width: 30,
+    height: 30,
+  },
+  clipboardButton: {
+    position: 'absolute',
+    top: 10,
+    left: 75,
+    marginTop: 10,
+    borderRadius: 15,
+    backgroundColor: 'skyblue',
+    width: 60,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  clipboardButton_dm: {
+    backgroundColor: '#003458',
+  },
+  btnClipboard: {
+    width: 35,
+    height: 35,
   },
   btnContainer: {
-    flex: 1,
+    flex: 0.3,
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
@@ -318,10 +373,5 @@ const styles = StyleSheet.create({
   },
   btnContainer_dm: {
     backgroundColor: '#003458',
-  },
-  btnImg: {
-    width: 46,
-    height: 46,
-    marginHorizontal: 5,
   },
 });
