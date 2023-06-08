@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,6 +21,9 @@ export default function Translate(props: any) {
   const [result, setResult] = useState<string>('');
   const [showCursor, setShowCursor] = useState<boolean>(true);
   const [cursorFlick, setCursorFlick] = useState<boolean>(true);
+  const [eventListenersAdded, setEventListenersAdded] =
+    useState<boolean>(false);
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,7 +81,7 @@ export default function Translate(props: any) {
   };
 
   // Define a flag to track if the event listeners have been added
-  let eventListenersAdded = false;
+  // let eventListenersAdded = false;
 
   const textToSpeech = (txt: string) => {
     Tts.getInitStatus().then(() => {
@@ -100,7 +103,7 @@ export default function Translate(props: any) {
       Tts.addEventListener('tts-finish', () => null);
       Tts.addEventListener('tts-cancel', () => null);
 
-      eventListenersAdded = true; // Update the flag
+      setEventListenersAdded(true); // Update the flag
     }
   };
 
@@ -114,13 +117,16 @@ export default function Translate(props: any) {
       activeOpacity={1}
       onPress={dismissKeyboard}
       style={[styles.container, props.isDarkMode && styles.container_dm]}>
-      <View
+      <TouchableOpacity
+        activeOpacity={1}
         style={[
           styles.inputContainer,
           props.isDarkMode && styles.inputContainer_dm,
-        ]}>
+        ]}
+        onPress={() => inputRef.current?.focus()}>
         <TextInput
           style={[styles.input, props.isDarkMode && styles.input_dm]}
+          ref={inputRef}
           onChangeText={setText}
           value={text}
           placeholder="무엇을 번역해드릴까요?"
@@ -129,7 +135,7 @@ export default function Translate(props: any) {
           onFocus={() => setShowCursor(false)}
           onBlur={() => setShowCursor(true)}
         />
-        {showCursor ? (
+        {showCursor && text === '' ? (
           <View style={[styles.cursor, cursorFlick && styles.cursorVisible]} />
         ) : null}
 
@@ -145,20 +151,17 @@ export default function Translate(props: any) {
               props.isDarkMode && styles.soundButton_dm,
             ]}
             onPress={() => textToSpeech(text)}>
-            {props.isdarkMode ? (
-              <Image
-                style={styles.btnSound}
-                source={require('../assets/icon-sound-darkmode.png')}
-              />
-            ) : (
-              <Image
-                style={styles.btnSound}
-                source={require('../assets/icon-sound.png')}
-              />
-            )}
+            <Image
+              style={styles.btnSound}
+              source={
+                props.isDarkMode
+                  ? require('../assets/icon-sound-darkmode.png')
+                  : require('../assets/icon-sound.png')
+              }
+            />
           </TouchableOpacity>
         ) : null}
-      </View>
+      </TouchableOpacity>
       <View
         style={[
           styles.outputContainer,
@@ -174,11 +177,7 @@ export default function Translate(props: any) {
         ) : (
           <Image
             style={styles.outputImg}
-            source={
-              props.isDarkMode
-                ? require('../assets/icon-dot-darkmode.png')
-                : require('../assets/icon-dot-darkmode.png')
-            }
+            source={require('../assets/icon-dot.png')}
           />
         )}
 
@@ -189,17 +188,14 @@ export default function Translate(props: any) {
               props.isDarkMode && styles.soundButton_dm,
             ]}
             onPress={() => textToSpeech(result)}>
-            {props.isdarkMode ? (
-              <Image
-                style={styles.btnSound}
-                source={require('../assets/icon-sound-darkmode.png')}
-              />
-            ) : (
-              <Image
-                style={styles.btnSound}
-                source={require('../assets/icon-sound.png')}
-              />
-            )}
+            <Image
+              style={styles.btnSound}
+              source={
+                props.isDarkMode
+                  ? require('../assets/icon-sound-darkmode.png')
+                  : require('../assets/icon-sound.png')
+              }
+            />
           </TouchableOpacity>
         ) : null}
         {text ? (
@@ -209,17 +205,14 @@ export default function Translate(props: any) {
               props.isDarkMode && styles.clipboardButton_dm,
             ]}
             onPress={btnClipboard}>
-            {props.isDarkMode ? (
-              <Image
-                style={styles.btnClipboard}
-                source={require('../assets/icon-clipboard-darkmode.png')}
-              />
-            ) : (
-              <Image
-                style={styles.btnClipboard}
-                source={require('../assets/icon-clipboard.png')}
-              />
-            )}
+            <Image
+              style={styles.btnClipboard}
+              source={
+                props.isDarkMode
+                  ? require('../assets/icon-clipboard-darkmode.png')
+                  : require('../assets/icon-clipboard.png')
+              }
+            />
           </TouchableOpacity>
         ) : null}
       </View>
