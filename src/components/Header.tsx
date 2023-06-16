@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,46 +15,43 @@ interface HeaderProps {
   darkModeSwitch: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({isDarkMode, darkModeSwitch}) => {
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
+const Header: React.FC<HeaderProps> = React.memo(
+  ({isDarkMode, darkModeSwitch}) => {
+    const dismissKeyboard = useCallback(() => {
+      Keyboard.dismiss();
+    }, []);
 
-  const handleDarkModeSwitch = () => {
-    darkModeSwitch();
-    if (isDarkMode) {
+    const handleDarkModeSwitch = useCallback(() => {
+      darkModeSwitch();
+      const modeMessage = isDarkMode
+        ? '라이트모드로 변경되었습니다.'
+        : '다크모드로 변경되었습니다.';
       showMessage({
-        message: '라이트모드 변경되었습니다.',
+        message: modeMessage,
         icon: 'info',
         duration: 700,
       });
-    } else {
-      showMessage({
-        message: '다크모드로 변경되었습니다.',
-        icon: 'info',
-        duration: 700,
-      });
-    }
-  };
+    }, [isDarkMode, darkModeSwitch]);
 
-  return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <View style={[styles.container, isDarkMode && styles.container_dm]}>
-        <Text style={[styles.btnTitle, isDarkMode && styles.btnTitle_dm]}>
-          morano
-        </Text>
-        <Switch
-          style={styles.btnSwitch}
-          trackColor={{false: '#767577', true: '#CCAC00'}}
-          thumbColor={isDarkMode ? '#F4F3F4' : '#F4F3F4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={handleDarkModeSwitch}
-          value={isDarkMode}
-        />
-      </View>
-    </TouchableWithoutFeedback>
-  );
-};
+    return (
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View style={[styles.container, isDarkMode && styles.container_dm]}>
+          <Text style={[styles.btnTitle, isDarkMode && styles.btnTitle_dm]}>
+            morano
+          </Text>
+          <Switch
+            style={styles.btnSwitch}
+            trackColor={{false: '#767577', true: '#CCAC00'}}
+            thumbColor={isDarkMode ? '#F4F3F4' : '#F4F3F4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={handleDarkModeSwitch}
+            value={isDarkMode}
+          />
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

@@ -13,9 +13,23 @@ import {
 import LanguageSelectionModal from '../utils/LanguageSelectionModal';
 import languageName from '../utils/LanguageName';
 
-export default function LanguageSet(props: any) {
+interface LanguageSetProps {
+  isDarkMode: boolean;
+  sourceLang: string;
+  setSourceLang: (language: string) => void;
+  targetLang: string;
+  setTargetLang: (language: string) => void;
+}
+
+const LanguageSet: React.FC<LanguageSetProps> = ({
+  isDarkMode,
+  sourceLang,
+  setSourceLang,
+  targetLang,
+  setTargetLang,
+}) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [modalMode, setModalMode] = useState('');
+  const [modalMode, setModalMode] = useState<'source' | 'target'>('source');
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -30,39 +44,36 @@ export default function LanguageSet(props: any) {
   };
 
   const handleLanguageSelect = (language: string) => {
-    // Handle selected language
-    // console.log('Selected', modalMode, 'language:', language);
     if (modalMode === 'source') {
-      props.setSourceLang(language);
+      setSourceLang(language);
     }
     if (modalMode === 'target') {
-      props.setTargetLang(language);
+      setTargetLang(language);
     }
     closeModal();
   };
 
   const btnChangeLanguage = () => {
-    const temp = props.sourceLang;
-    props.setSourceLang(props.targetLang);
-    props.setTargetLang(temp);
+    const temp = sourceLang;
+    setSourceLang(targetLang);
+    setTargetLang(temp);
   };
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <View style={[styles.container, props.isDarkMode && styles.container_dm]}>
+      <View style={[styles.container, isDarkMode && styles.container_dm]}>
         <TouchableOpacity
           style={styles.langArea}
           onPress={() => {
             setModalMode('source');
             openModal();
           }}>
-          <Text
-            style={[styles.langStyle, props.isDarkMode && styles.langStyle_dm]}>
-            {languageName(props.sourceLang)}
+          <Text style={[styles.langStyle, isDarkMode && styles.langStyle_dm]}>
+            {languageName(sourceLang)}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={btnChangeLanguage}>
-          {props.isDarkMode ? (
+          {isDarkMode ? (
             <Image
               style={styles.btnChange}
               source={require('../assets/icon-change-darkmode.png')}
@@ -80,12 +91,10 @@ export default function LanguageSet(props: any) {
             setModalMode('target');
             openModal();
           }}>
-          <Text
-            style={[styles.langStyle, props.isDarkMode && styles.langStyle_dm]}>
-            {languageName(props.targetLang)}
+          <Text style={[styles.langStyle, isDarkMode && styles.langStyle_dm]}>
+            {languageName(targetLang)}
           </Text>
         </TouchableOpacity>
-
         <Modal
           visible={isModalVisible}
           animationType="none"
@@ -94,14 +103,15 @@ export default function LanguageSet(props: any) {
           <LanguageSelectionModal
             closeModal={closeModal}
             modalMode={modalMode}
-            isDarkMode={props.isDarkMode}
+            isDarkMode={isDarkMode}
             handleLanguageSelect={handleLanguageSelect}
+            visible={true}
           />
         </Modal>
       </View>
     </TouchableWithoutFeedback>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -132,3 +142,5 @@ const styles = StyleSheet.create({
     height: 34,
   },
 });
+
+export default LanguageSet;

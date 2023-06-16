@@ -16,7 +16,7 @@ import Tts from 'react-native-tts';
 
 const apiKey = 'AIzaSyBOPrHwjKxyy7QyTipWR8qvqThlZQhSem0'; // replace with your own API key
 
-export default function Translate(props: any) {
+const Translate: React.FC<any> = props => {
   const [text, setText] = useState<string>('');
   const [result, setResult] = useState<string>('');
   const [showCursor, setShowCursor] = useState<boolean>(true);
@@ -80,9 +80,6 @@ export default function Translate(props: any) {
     }
   };
 
-  // Define a flag to track if the event listeners have been added
-  // let eventListenersAdded = false;
-
   const textToSpeech = (txt: string) => {
     Tts.getInitStatus().then(() => {
       Tts.speak(txt, {
@@ -112,6 +109,15 @@ export default function Translate(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, props.sourceLang, props.targetLang]);
 
+  const renderCursor = () => {
+    if (showCursor && text === '') {
+      return (
+        <View style={[styles.cursor, cursorFlick && styles.cursorVisible]} />
+      );
+    }
+    return null;
+  };
+
   return (
     <TouchableOpacity
       activeOpacity={1}
@@ -135,13 +141,13 @@ export default function Translate(props: any) {
           onFocus={() => setShowCursor(false)}
           onBlur={() => setShowCursor(true)}
         />
-        {showCursor && text === '' ? (
-          <View style={[styles.cursor, cursorFlick && styles.cursorVisible]} />
-        ) : null}
-
+        {renderCursor()}
         <TouchableOpacity
           style={[styles.xButton, props.isDarkMode && styles.button_dm]}
-          onPress={btnReset}>
+          onPress={() => {
+            btnReset();
+            Tts.stop();
+          }}>
           <Text style={styles.buttonText}>X</Text>
         </TouchableOpacity>
         {text ? (
@@ -160,7 +166,23 @@ export default function Translate(props: any) {
               }
             />
           </TouchableOpacity>
-        ) : null}
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.soundButton,
+              props.isDarkMode && styles.soundButton_dm,
+            ]}
+            onPress={() => console.log('이미지 번역')}>
+            <Image
+              style={styles.btnSound}
+              source={
+                props.isDarkMode
+                  ? require('../assets/icon-camera-darkmode.png')
+                  : require('../assets/icon-camera.png')
+              }
+            />
+          </TouchableOpacity>
+        )}
       </TouchableOpacity>
       <View
         style={[
@@ -225,7 +247,7 @@ export default function Translate(props: any) {
       </View>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -368,3 +390,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#003458',
   },
 });
+
+export default Translate;

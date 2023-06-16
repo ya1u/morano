@@ -9,17 +9,25 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Image,
+  Platform,
 } from 'react-native';
-import {LanguageMap} from './LanguageMap';
 import {showMessage} from 'react-native-flash-message';
+import {LanguageMap} from './LanguageMap';
 
-export default function LanguageSelectionModal(props: any) {
-  const [rul, setRul] = useState(new Map());
+interface LanguageSelectionModalProps {
+  visible: boolean;
+  modalMode: 'source' | 'target';
+  isDarkMode: boolean;
+  closeModal: () => void;
+  handleLanguageSelect: (language: string) => void;
+}
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const saveRul = async (rul: Map<string, string>) => {
+const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = props => {
+  const [rul, setRul] = useState<Map<string, string>>(new Map());
+
+  const saveRul = async (newRul: Map<string, string>) => {
     try {
-      const serializedRul = JSON.stringify(Array.from(rul.entries()));
+      const serializedRul = JSON.stringify(Array.from(newRul.entries()));
       await AsyncStorage.setItem('rul', serializedRul);
     } catch (error) {
       console.log('Failed to save rul state:', error);
@@ -31,12 +39,12 @@ export default function LanguageSelectionModal(props: any) {
       const serializedRul = await AsyncStorage.getItem('rul');
       if (serializedRul !== null) {
         const rulArray = JSON.parse(serializedRul);
-        return new Map(rulArray);
+        return new Map<string, string>(rulArray);
       }
     } catch (error) {
       console.log('Failed to load rul state:', error);
     }
-    return new Map([
+    return new Map<string, string>([
       ['en', '영어'],
       ['ko', '한국어'],
     ]);
@@ -66,7 +74,7 @@ export default function LanguageSelectionModal(props: any) {
     showMessage({
       message: '삭제되었습니다.',
       icon: 'info',
-      duration: 500, // Duration in milliseconds
+      duration: 500,
     });
 
     const newRul = new Map(rul);
@@ -113,8 +121,8 @@ export default function LanguageSelectionModal(props: any) {
                   <Text style={styles.modalCloseButtonText}>X</Text>
                 </TouchableOpacity>
               </View>
-              <ScrollView>
-                {rul.size > 0 ? (
+              <ScrollView nestedScrollEnabled={true}>
+                {rul.size > 0 && (
                   <>
                     <Text
                       style={[
@@ -146,7 +154,6 @@ export default function LanguageSelectionModal(props: any) {
                                 props.isDarkMode && styles.rulDeleteButton_dm,
                               ]}
                               onPress={() => handleRulDelete(key)}>
-                              {/* <Text style={styles.rulDeleteButtonImg}>X</Text> */}
                               {props.isDarkMode ? (
                                 <Image
                                   style={styles.rulDeleteButtonImg}
@@ -164,8 +171,7 @@ export default function LanguageSelectionModal(props: any) {
                       ))}
                     </View>
                   </>
-                ) : null}
-
+                )}
                 <Text
                   style={[
                     styles.subTitleText,
@@ -192,6 +198,24 @@ export default function LanguageSelectionModal(props: any) {
                     </TouchableOpacity>
                   ))}
                 </View>
+                {/* {Array.from(LanguageMap).map(([key, value]) => (
+                  <TouchableOpacity
+                    key={key}
+                    style={[
+                      styles.modalLanguageButton,
+                      props.isDarkMode && styles.modalLanguageButton_dm,
+                    ]}
+                    onPress={() => props.handleLanguageSelect(key)}>
+                    <Text
+                      style={[
+                        styles.modalLanguageButtonText,
+                        props.isDarkMode && styles.modalLanguageButtonText_dm,
+                      ]}>
+                      {value}
+                    </Text>
+                  </TouchableOpacity>
+                ))} */}
+                {/* 아 코드를 쓰면 스크롤이 됌 */}
               </ScrollView>
             </View>
           </TouchableWithoutFeedback>
@@ -199,7 +223,7 @@ export default function LanguageSelectionModal(props: any) {
       </TouchableWithoutFeedback>
     </Modal>
   );
-}
+};
 
 const styles = StyleSheet.create({
   overlay: {
@@ -219,34 +243,39 @@ const styles = StyleSheet.create({
     backgroundColor: '#202B38',
   },
   title: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 10,
     paddingTop: 3,
   },
   titleText: {
+    flex: 1,
     fontSize: 24,
     color: 'black',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   titleText_dm: {
     color: '#C2C2C2',
   },
   modalCloseButton: {
     position: 'absolute',
+    top: 2,
     right: 5,
-    width: 25,
-    height: 25,
+    width: 30,
+    height: 30,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'skyblue',
+    ...(Platform.OS === 'android' && {top: 6}),
   },
   modalCloseButton_dm: {
     backgroundColor: '#003458',
   },
   modalCloseButtonText: {
-    fontSize: 14,
+    fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -259,15 +288,15 @@ const styles = StyleSheet.create({
   },
   rulDeleteButton: {
     position: 'absolute',
-    top: 4.25,
     right: 1,
-    width: 35,
-    height: 23,
+    width: 40,
+    height: 24,
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    ...(Platform.OS === 'android' && {top: 15}),
   },
   rulDeleteButton_dm: {
     borderColor: '#C2C2C2',
@@ -277,6 +306,9 @@ const styles = StyleSheet.create({
     height: 20,
   },
   modalLanguageButton: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -287,7 +319,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#202B38',
   },
   modalLanguageButtonText: {
-    fontSize: 23,
+    flex: 1,
+    fontSize: 24,
     color: 'black',
     textAlign: 'center',
   },
@@ -295,3 +328,4 @@ const styles = StyleSheet.create({
     color: '#C2C2C2',
   },
 });
+export default LanguageSelectionModal;

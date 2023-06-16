@@ -1,4 +1,4 @@
-export const LanguageMap: Map<string, string> = new Map([
+export const LanguageMap: Map<string, string> = new Map<string, string>([
   ['af', '아프리칸스어'],
   ['sq', '알바니아어'],
   ['am', '암하라어'],
