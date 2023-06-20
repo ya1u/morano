@@ -166,23 +166,22 @@ const Translate: React.FC<any> = props => {
               }
             />
           </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[
-              styles.soundButton,
-              props.isDarkMode && styles.soundButton_dm,
-            ]}
-            onPress={() => console.log('이미지 번역')}>
-            <Image
-              style={styles.btnSound}
-              source={
-                props.isDarkMode
-                  ? require('../assets/icon-camera-darkmode.png')
-                  : require('../assets/icon-camera.png')
-              }
-            />
-          </TouchableOpacity>
-        )}
+        ) : // <TouchableOpacity
+        //   style={[
+        //     styles.soundButton,
+        //     props.isDarkMode && styles.soundButton_dm,
+        //   ]}
+        //   onPress={() => console.log('이미지 번역')}>
+        //   <Image
+        //     style={styles.btnSound}
+        //     source={
+        //       props.isDarkMode
+        //         ? require('../assets/icon-camera-darkmode.png')
+        //         : require('../assets/icon-camera.png')
+        //     }
+        //   />
+        // </TouchableOpacity>
+        null}
       </TouchableOpacity>
       <View
         style={[
