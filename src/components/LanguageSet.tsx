@@ -16,8 +16,8 @@ import languageName from '../utils/LanguageName';
 interface LanguageSetProps {
   isDarkMode: boolean;
   sourceLang: string;
-  setSourceLang: (language: string) => void;
   targetLang: string;
+  setSourceLang: (language: string) => void;
   setTargetLang: (language: string) => void;
 }
 
@@ -28,7 +28,7 @@ const LanguageSet: React.FC<LanguageSetProps> = ({
   targetLang,
   setTargetLang,
 }) => {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [modalMode, setModalMode] = useState<'source' | 'target'>('source');
 
   const dismissKeyboard = () => {

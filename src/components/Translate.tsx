@@ -13,8 +13,10 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import {showMessage} from 'react-native-flash-message';
 import Tts from 'react-native-tts';
+import {API_KEY, API_URL_TRANSLATE} from '@env';
 
-const apiKey = 'AIzaSyBOPrHwjKxyy7QyTipWR8qvqThlZQhSem0'; // replace with your own API key
+const apiKey = API_KEY;
+const apiUrl = API_URL_TRANSLATE;
 
 const Translate: React.FC<any> = props => {
   const [text, setText] = useState<string>('');
@@ -50,7 +52,7 @@ const Translate: React.FC<any> = props => {
   };
 
   const translateText = async () => {
-    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+    const url = `${apiUrl}${apiKey}`;
     const format = 'text';
 
     try {
@@ -80,17 +82,65 @@ const Translate: React.FC<any> = props => {
     }
   };
 
-  const textToSpeech = (txt: string) => {
-    Tts.getInitStatus().then(() => {
-      Tts.speak(txt, {
-        iosVoiceId: 'default',
-        rate: 0.5,
-        androidParams: {
-          KEY_PARAM_PAN: 0,
-          KEY_PARAM_VOLUME: 1,
-          KEY_PARAM_STREAM: 'STREAM_MUSIC',
-        },
+  const textToSpeech = (txt: string, lang: string) => {
+    if (
+      lang === 'ko' ||
+      lang === 'en' ||
+      lang === 'ar' ||
+      lang === 'bg' ||
+      lang === 'ca' ||
+      lang === 'zh-CN' ||
+      lang === 'zh-TW' ||
+      lang === 'hr' ||
+      lang === 'cs' ||
+      lang === 'da' ||
+      lang === 'nl' ||
+      lang === 'fi' ||
+      lang === 'fr' ||
+      lang === 'de' ||
+      lang === 'el' ||
+      lang === 'he' ||
+      lang === 'hi' ||
+      lang === 'hu' ||
+      lang === 'id' ||
+      lang === 'it' ||
+      lang === 'ja' ||
+      lang === 'kk' ||
+      lang === 'ms' ||
+      lang === 'no' ||
+      lang === 'pl' ||
+      lang === 'pt' ||
+      lang === 'ro' ||
+      lang === 'ru' ||
+      lang === 'sk' ||
+      lang === 'es' ||
+      lang === 'sv' ||
+      lang === 'th' ||
+      lang === 'tr' ||
+      lang === 'uk' ||
+      lang === 'vi'
+    ) {
+      Tts.setDefaultLanguage(lang);
+    } else {
+      const modeMessage = '지원되지 않는 언어입니다.';
+      showMessage({
+        message: modeMessage,
+        icon: 'info',
+        duration: 700,
       });
+      return;
+    }
+    Tts.getInitStatus().then(() => {
+      // Tts.speak(txt, {
+      //   iosVoiceId: 'default',
+      //   rate: 0.5,
+      //   androidParams: {
+      //     KEY_PARAM_PAN: 0,
+      //     KEY_PARAM_VOLUME: 1,
+      //     KEY_PARAM_STREAM: 'STREAM_MUSIC',
+      //   },
+      // });
+      Tts.speak(txt);
     });
 
     if (!eventListenersAdded) {
@@ -156,7 +206,7 @@ const Translate: React.FC<any> = props => {
               styles.soundButton,
               props.isDarkMode && styles.soundButton_dm,
             ]}
-            onPress={() => textToSpeech(text)}>
+            onPress={() => textToSpeech(text, props.sourceLang)}>
             <Image
               style={styles.btnSound}
               source={
@@ -208,7 +258,7 @@ const Translate: React.FC<any> = props => {
               styles.soundButton,
               props.isDarkMode && styles.soundButton_dm,
             ]}
-            onPress={() => textToSpeech(result)}>
+            onPress={() => textToSpeech(result, props.targetLang)}>
             <Image
               style={styles.btnSound}
               source={
