@@ -122,7 +122,7 @@ const Translate: React.FC<any> = props => {
     ) {
       Tts.setDefaultLanguage(lang);
     } else {
-      const modeMessage = '지원되지 않는 언어입니다.';
+      const modeMessage = '이 언어는 음성 지원되지 않습니다.';
       showMessage({
         message: modeMessage,
         icon: 'info',
