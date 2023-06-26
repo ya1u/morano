@@ -10,7 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@google-cloud/text-to-speech": "^4.2.2",
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "react": "18.2.0",
