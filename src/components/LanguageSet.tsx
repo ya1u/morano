@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Alert,
 } from 'react-native';
 import LanguageSelectionModal from '../utils/LanguageSelectionModal';
 import languageName from '../utils/LanguageName';
@@ -45,10 +46,20 @@ const LanguageSet: React.FC<LanguageSetProps> = ({
 
   const handleLanguageSelect = (language: string) => {
     if (modalMode === 'source') {
-      setSourceLang(language);
+      if (language !== targetLang) {
+        setSourceLang(language);
+      } else if (language === targetLang) {
+        Alert.alert('결과 언어와 같은 언어입니다.');
+        return;
+      }
     }
     if (modalMode === 'target') {
-      setTargetLang(language);
+      if (language !== sourceLang) {
+        setTargetLang(language);
+      } else if (language === sourceLang) {
+        Alert.alert('번역할 언어와 같은 언어입니다.');
+        return;
+      }
     }
     closeModal();
   };
