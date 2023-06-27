@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:morano.xcodeproj">
+      location = "group:/Users/yalu/Documents/workspace/morano/ios/Morano.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
